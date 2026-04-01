@@ -1,10 +1,10 @@
-package com.tungduong.login_system;
+package com.example.laptopshop;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LoginSystemApplicationTests {
+class LaptopshopApplicationTests {
 
 	@Test
 	void contextLoads() {
