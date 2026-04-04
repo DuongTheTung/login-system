@@ -2,16 +2,23 @@ package com.example.login_system.controller.admin;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.login_system.domain.User;
 import com.example.login_system.repository.UserRepository;
 import com.example.login_system.service.UserService;
+import com.example.login_system.service.UploadService;
+
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,10 +30,15 @@ public class UserController {
 
     private final UserService userService;
     private final UserRepository userRepository;
+    private final UploadService uploadService;
 
-    public UserController(UserService userService, UserRepository userRepository) {
+    @Autowired
+    private PasswordEncoder PasswordEncoder;
+
+    public UserController(UserService userService, UserRepository userRepository, UploadService uploadService) {
         this.userService = userService;
         this.userRepository = userRepository;
+        this.uploadService = uploadService;
     }
 
     @RequestMapping("/")
@@ -35,7 +47,7 @@ public class UserController {
         System.out.println(arrUsers);
         model.addAttribute("eric", "test");
         model.addAttribute("hoidanit", "tung");
-        return "hello";
+        return "client/homepage/dashboard/show";
     }
 
     @RequestMapping("/admin/user")
@@ -55,17 +67,41 @@ public class UserController {
 
     }
 
-    @RequestMapping("/admin/user/create")
+    @GetMapping("/admin/user/create")
     public String getCreateUserPage(Model model) {
         model.addAttribute("newUser", new User());
         return "admin/user/create";
     }
 
-    @RequestMapping(value = "/admin/user/create", method = RequestMethod.POST)
-    public String createUserPage(Model model, @ModelAttribute("newUser") User hoidanit) {
+    // @PostMapping("/admin/user/create")
+    // public String createUserPage(Model model, @ModelAttribute("newUser") User
+    // hoidanit) {
+    // // this.userService.handleSaveUser(hoidanit);
+    // return "redirect:/admin/user";
+
+    // }
+
+    @PostMapping(value = "/admin/user/create")
+    public String createUserPage(Model model,
+            @ModelAttribute("newUser") @Valid User hoidanit,
+            BindingResult newUserBindingResult,
+            @RequestParam("hoidanitFile") MultipartFile file) {
+        List<FieldError> errors = newUserBindingResult.getFieldErrors();
+        for (FieldError error : errors) {
+            System.out.println(error.getField() + " - " + error.getDefaultMessage());
+        }
+
+        if (newUserBindingResult.hasErrors()) {
+            return "admin/user/create";
+        }
+
+        String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
+        String hashPassword = this.PasswordEncoder.encode(hoidanit.getPassword());
+        hoidanit.setAvatar(avatar);
+        hoidanit.setPassword(hashPassword);
+        hoidanit.setRole(this.userService.getRoleByName(hoidanit.getRole().getName()));
         this.userService.handleSaveUser(hoidanit);
         return "redirect:/admin/user";
-
     }
 
     @RequestMapping("/admin/user/update/{id}")

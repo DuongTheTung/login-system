@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 // import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
+import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
 import com.example.login_system.service.CustomUserDetailsService;
 import com.example.login_system.service.UserService;
@@ -51,15 +52,14 @@ public class SecurityConfiguration {
         return new CustomSuccessHandler();
     }
 
-    // @Bean
-    // public SpringSessionRememberMeServices rememberMeServices() {
-    // SpringSessionRememberMeServices rememberMeServices = new
-    // SpringSessionRememberMeServices();
-    // // optionally customize
-    // rememberMeServices.setAlwaysRemember(true);
+    @Bean
+    public SpringSessionRememberMeServices rememberMeServices() {
+        SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
+        // optionally customize
+        rememberMeServices.setAlwaysRemember(true);
 
-    // return rememberMeServices;
-    // }
+        return rememberMeServices;
+    }
 
     // @Bean
     // SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -107,19 +107,28 @@ public class SecurityConfiguration {
                         .dispatcherTypeMatchers(DispatcherType.FORWARD,
                                 DispatcherType.INCLUDE)
                         .permitAll()
-                        .requestMatchers("/", "/login", "/client/**", "/css/**", "/js/**",
+                        .requestMatchers("/login", "/client/**", "/css/**", "/js/**",
                                 "/images/**")
                         .permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated())
+                .sessionManagement((sessionManagement) -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                        .invalidSessionUrl("/logout?expired")
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false))
+                .logout(logout -> logout.deleteCookies("JSESSIONID").invalidateHttpSession(true))
+
+                .rememberMe(r -> r.rememberMeServices(rememberMeServices()))
 
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .successHandler(customSuccessHandler())
                         .failureUrl("/login?error")
-                        .permitAll());
+                        .permitAll())
+                .exceptionHandling(ex -> ex.accessDeniedPage("/access-deny"));
 
         return http.build();
     }

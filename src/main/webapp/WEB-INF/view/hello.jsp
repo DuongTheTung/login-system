@@ -24,6 +24,10 @@
                 ${hoidanit}
             </h2>
             <button class="btn btn-warning">Submit</button>
+            <form method="post" action="/logout">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                <button class="dropdown-item">dawng xuat</button>
+            </form>
         </body>
 
         </html>
