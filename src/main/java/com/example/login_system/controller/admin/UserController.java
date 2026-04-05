@@ -1,5 +1,6 @@
 package com.example.login_system.controller.admin;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class UserController {
     private final UploadService uploadService;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private PasswordEncoder PasswordEncoder;
 
     public UserController(UserService userService, UserRepository userRepository, UploadService uploadService) {
@@ -48,6 +52,7 @@ public class UserController {
         model.addAttribute("eric", "test");
         model.addAttribute("hoidanit", "tung");
         return "client/homepage/dashboard/show";
+
     }
 
     @RequestMapping("/admin/user")
@@ -139,5 +144,41 @@ public class UserController {
         this.userService.deleteAUser(user.getId());
         return "redirect:/admin/user";
 
+    }
+
+    @GetMapping("/change-password")
+    public String showChangePasswordPage() {
+        return "client/homepage/user/change-password";
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(
+            @RequestParam String oldPassword,
+            @RequestParam String newPassword,
+            @RequestParam String confirmPassword,
+            Principal principal,
+            Model model) {
+
+        String email = principal.getName(); // user đang login
+        User user = userService.getUserByEmail(email);
+
+        // check mật khẩu cũ
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            model.addAttribute("error", "Mật khẩu cũ không đúng");
+            return "client/homepage/user/change-password";
+        }
+
+        // check confirm
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("error", "Mật khẩu xác nhận không khớp");
+            return "client/homepage/user/change-password";
+        }
+
+        // cập nhật mật khẩu mới
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userService.handleSaveUser(user);
+
+        model.addAttribute("success", "Đổi mật khẩu thành công");
+        return "client/homepage/user/change-password";
     }
 }

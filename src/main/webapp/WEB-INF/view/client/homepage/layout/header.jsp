@@ -23,6 +23,7 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="#!">Settings</a></li>
                         <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                        <li><a class="dropdown-item" href="/change-password">Đổi mật khẩu</a></li>
                         <li>
                             <hr class="dropdown-divider" />
                         </li>

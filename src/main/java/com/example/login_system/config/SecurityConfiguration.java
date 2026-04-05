@@ -112,7 +112,7 @@ public class SecurityConfiguration {
                         .permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-
+                        .requestMatchers("/change-password").authenticated()
                         .anyRequest().authenticated())
                 .sessionManagement((sessionManagement) -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
