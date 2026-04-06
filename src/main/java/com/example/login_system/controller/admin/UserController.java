@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,17 +44,25 @@ public class UserController {
         this.uploadService = uploadService;
     }
 
-    @RequestMapping("/")
-    public String getHomePage(Model model) {
-        List<User> arrUsers = this.userService.getAllUserByEmail("2@gmail.com");
-        System.out.println(arrUsers);
-        model.addAttribute("eric", "test");
-        model.addAttribute("hoidanit", "tung");
-        return "client/homepage/dashboard/show";
+    // @GetMapping("/")
+    // public String getHomePage(Model model, @PathVariable long id) {
+    // User user = this.userService.getUserById(id);
+    // model.addAttribute("user", user);
+    // model.addAttribute("id", id);
+    // return "client/homepage/dashboard/show";
+    // }
 
+    @GetMapping("/")
+    public String getHomePage(Model model, Principal principal) {
+        if (principal != null) {
+            String email = principal.getName(); // Lấy email người đang login
+            User currentUser = this.userService.getUserByEmail(email);
+            model.addAttribute("user", currentUser); // Nạp nguyên cục user vào đây
+        }
+        return "client/homepage/dashboard/show";
     }
 
-    @RequestMapping("/admin/user")
+    @GetMapping("/admin/user")
     public String getUserPage(Model model) {
         List<User> users = this.userService.getAllUsers();
         model.addAttribute("users1", users);
@@ -63,7 +70,7 @@ public class UserController {
 
     }
 
-    @RequestMapping("/admin/user/{id}")
+    @GetMapping("/admin/user/{id}")
     public String getUserDetailPage(Model model, @PathVariable long id) {
         User user = this.userService.getUserById(id);
         model.addAttribute("user", user);
@@ -109,7 +116,7 @@ public class UserController {
         return "redirect:/admin/user";
     }
 
-    @RequestMapping("/admin/user/update/{id}")
+    @GetMapping("/admin/user/update/{id}")
     public String getUpdateUserPage(Model model, @PathVariable long id) {
         User currentUser = this.userService.getUserById(id);
         model.addAttribute("newUser", currentUser);
@@ -181,4 +188,65 @@ public class UserController {
         model.addAttribute("success", "Đổi mật khẩu thành công");
         return "client/homepage/user/change-password";
     }
+
+    // @GetMapping("/update/{id}")
+    // public String getUpdate(Model model, @PathVariable long id) {
+    // User currentUser = this.userService.getUserById(id);
+    // model.addAttribute("newUser", currentUser);
+    // return "client/homepage/user/update";
+
+    // }
+
+    // @PostMapping("/update")
+    // public String postUpdate(Model model, @ModelAttribute("newUser") User user) {
+    // User currentUser = this.userService.getUserById(user.getId());
+    // if (currentUser != null) {
+    // currentUser.setAddress(user.getAddress());
+    // currentUser.setFullName(user.getFullName());
+    // currentUser.setPhone(user.getPhone());
+    // this.userService.handleSaveUser(currentUser);
+    // }
+    // return "redirect:/";
+
+    // }
+
+    @GetMapping("/update/{id}")
+    public String getUpdate(Model model, @PathVariable long id, Principal principal) {
+        // 1. Lấy thông tin user đang đăng nhập qua session (Email)
+        String email = principal.getName();
+        User loginUser = this.userService.getUserByEmail(email);
+
+        // 2. Kiểm tra: Nếu ID trên URL khác với ID của người đang login thì chặn lại
+        if (loginUser == null || loginUser.getId() != id) {
+            return "auth/deny"; // Hoặc redirect về "/"
+        }
+
+        User currentUser = this.userService.getUserById(id);
+        model.addAttribute("newUser", currentUser);
+        return "client/homepage/user/update";
+    }
+
+    @PostMapping("/update")
+    public String postUpdate(Model model, @ModelAttribute("newUser") User user, Principal principal) {
+        // 1. Lấy user thực sự đang đăng nhập
+        String email = principal.getName();
+        User loginUser = this.userService.getUserByEmail(email);
+
+        // 2. Chỉ cho phép update nếu ID trùng khớp với loginUser
+        if (loginUser != null && loginUser.getId() == user.getId()) {
+            User currentUser = this.userService.getUserById(user.getId());
+            if (currentUser != null) {
+                currentUser.setAddress(user.getAddress());
+                currentUser.setFullName(user.getFullName());
+                currentUser.setPhone(user.getPhone());
+                this.userService.handleSaveUser(currentUser);
+            }
+        } else {
+            // Hành động giả mạo ID hoặc lỗi session
+            return "redirect:/login";
+        }
+
+        return "redirect:/";
+    }
+
 }

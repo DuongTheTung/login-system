@@ -30,14 +30,14 @@ public class HomePageController {
     @GetMapping("/register")
     public String getRegisterPage(Model model) {
         model.addAttribute("registerUser", new RegisterDTO());
-        return "client/auth/register";
+        return "auth/register";
     }
 
     @PostMapping("/register")
     public String handelRegisterPage(@ModelAttribute("registerUser") @Valid RegisterDTO registerDTO,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "client/auth/register";
+            return "auth/register";
         }
 
         User user = this.userService.registerDTOtoUser(registerDTO);
@@ -52,12 +52,12 @@ public class HomePageController {
     @GetMapping("/login")
     public String getLoginPage(Model model) {
         model.addAttribute("registerUser", new RegisterDTO());
-        return "client/auth/login";
+        return "auth/login";
     }
 
     @GetMapping("/access-deny")
     public String getDenyPage(Model model) {
         model.addAttribute("registerUser", new RegisterDTO());
-        return "client/auth/deny";
+        return "auth/deny";
     }
 }

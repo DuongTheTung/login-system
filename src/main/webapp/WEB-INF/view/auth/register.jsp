@@ -79,11 +79,11 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-floating mb-3 mb-md-0">
-                                                                <input class="form-control" type="password"
+                                                                <form:input class="form-control" type="password"
                                                                     placeholder="Confirm password"
-                                                                    path="comfirmPassword" />
-                                                                <label for="inputPasswordConfirm">Confirm
-                                                                    Password</label>
+                                                                    path="confirmPassword" />
+                                                                <label
+                                                                    for="inputPasswordConfirm">ConfirmPassword</label>
                                                             </div>
                                                         </div>
                                                     </div>
