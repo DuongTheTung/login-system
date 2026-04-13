@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class DashBoardController {
     @GetMapping("/admin")
     public String getDashboard() {
-        return "admin/dashboard/show";
+        return "redirect:/admin/user";
     }
 
 }

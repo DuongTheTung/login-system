@@ -1,116 +1,112 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-            <!DOCTYPE html>
-            <html lang="en">
 
-            <head>
-                <meta charset="utf-8" />
-                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-                <meta name="description" content="Hỏi Dân IT - Dự án laptopshop" />
-                <meta name="author" content="Hỏi Dân IT" />
-                <title>Create User - Hỏi Dân IT</title>
-                <link href="/css/styles.css" rel="stylesheet" />
+            <jsp:include page="/WEB-INF/view/layout/header.jsp" />
 
-                <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-                <script>
-                    $(document).ready(() => {
-                      const avatarFile = $('#avatarFile');
-                
-                      avatarFile.change(function(e) {
-                        const imgURL = URL.createObjectURL(e.target.files[0]);
-                        $('#avatarPreview').attr('src', imgURL);
-                        $('#avatarPreview').css('display', 'block');
-                      });
-                    });
-                  </script>
-            </head>
+            <div class="row justify-content-center pt-4 mb-5">
+                <div class="col-md-10 col-lg-8">
+                    <div class="card shadow-sm border-0 bg-white">
+                        <div
+                            class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                            <h4 class="fw-bold text-primary mb-0"><i class="fa-solid fa-user-plus me-2"></i>Thêm Mới
+                                Người Dùng</h4>
+                            <a href="/admin/user" class="btn btn-sm btn-outline-secondary"><i
+                                    class="fa-solid fa-arrow-left me-1"></i>Trở lại danh sách</a>
+                        </div>
+                        <div class="card-body p-4">
 
-            <body class="sb-nav-fixed">
-                <jsp:include page="../layout/header.jsp" />
-                <div id="layoutSidenav">
-                    <jsp:include page="../layout/sidebar.jsp" />
-                    <div id="layoutSidenav_content">
-                        <main>
-                            <div class="container-fluid px-4">
-                                <h1 class="mt-4">Manage Users</h1>
-                                <ol class="breadcrumb mb-4">
-                                    <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                                    <li class="breadcrumb-item active">Users</li>
-                                </ol>
-                                <div class="mt-5">
-                                    <div class="row">
-                                        <div class="col-md-6 col-12 mx-auto">
-                                            <h3>Create a user</h3>
-                                            <hr />
-                                            <form:form method="post" action="/admin/user/create"
-                                                modelAttribute="newUser" class="row"
-                                                enctype="multipart/form-data">
-                                                <div class="mb-3 col-12 col-md-6">
-                                                    <label class="form-label">Email:</label>
-                                                    <form:input type="email" class="form-control is-invalid" path="email" />
-                                                    <form:errors path="email" cssClass="invalid-feedback, display = block"/>
-                                                </div>
-                                                <div class="mb-3 col-12 col-md-6">
-                                                    <c:set var="errorPassword">
-                                                        <form:errors path="password" cssClass="invalid-feedback"/>
-                                                    </c:set>
-                                                    <label class="form-label">Password:</label>
-                                                    <form:input type="password" class="form-control ${not empty errorPassword ? 'is-invalid' : ''}" path="password" />
-                                                    ${errorPassword}
-                                                </div>
-                                                <div class="mb-3 col-12 col-md-6">
-                                                    <label class="form-label">Phone number:</label>
-                                                    <form:input type="text" class="form-control" path="phone" />
-                                                </div>
-                                                <div class="mb-3 col-12 col-md-6">
-                                                    <label class="form-label">Full Name:</label>
-                                                    <form:input type="text" class="form-control" path="fullName" />
-                                                </div>
-                                                <div class="mb-3 col-12">
-                                                    <label class="form-label">Address:</label>
-                                                    <form:input type="text" class="form-control" path="address" />
-                                                </div>
+                            <form:form action="/admin/user/create" method="post" modelAttribute="newUser"
+                                enctype="multipart/form-data" class="needs-validation">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
-                                                <div class="mb-3 col-12 col-md-6">
-                                                    <label class="form-label">Role:</label>
-                                                    <form:select class="form-select" path="role.name">
-                                                        <form:option value="ADMIN">ADMIN</form:option>
-                                                        <form:option value="USER">USER</form:option>
-                                                    </form:select>
-                                                </div>
-                                                <div class="mb-3 col-12 col-md-6">
-                                                    <label for="avatarFile" class="form-label">Avatar:</label>
-                                                    <input class="form-control" type="file" id="avatarFile"
-                                                        accept=".png, .jpg, .jpeg"
-                                                        name="hoidanitFile"
-                                                        />
-                                                </div>
-                                                <div class="col-12 mb-3">
-                                                    <img style="max-height: 250px; display: none;" alt="avatar preview"
-                                                        id="avatarPreview" />
-                                                </div>
-                                                <div class="col-12 mb-5">
-                                                    <button type="submit" class="btn btn-primary">Create</button>
-                                                </div>
-                                            </form:form>
-
+                                <div class="row">
+                                    <!-- Cột Trái -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label fw-semibold">Email <span
+                                                    class="text-danger">*</span></label>
+                                            <form:input path="email" type="email" cssClass="form-control" id="email"
+                                                required="true" />
+                                            <form:errors path="email" cssClass="text-danger small mt-1 d-block" />
                                         </div>
 
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label fw-semibold">Mật khẩu <span
+                                                    class="text-danger">*</span></label>
+                                            <form:password path="password" cssClass="form-control" id="password"
+                                                required="true" />
+                                            <form:errors path="password" cssClass="text-danger small mt-1 d-block" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="fullName" class="form-label fw-semibold">Họ và Tên <span
+                                                    class="text-danger">*</span></label>
+                                            <form:input path="fullName" cssClass="form-control" id="fullName"
+                                                required="true" />
+                                            <form:errors path="fullName" cssClass="text-danger small mt-1 d-block" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="roleName" class="form-label fw-semibold">Vai trò <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="role.name" class="form-select" id="roleName" required>
+                                                <option value="USER" selected>USER</option>
+                                                <option value="ADMIN">ADMIN</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Cột Phải -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="phone" class="form-label fw-semibold">Số điện thoại</label>
+                                            <form:input path="phone" cssClass="form-control" id="phone" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="address" class="form-label fw-semibold">Địa chỉ</label>
+                                            <form:input path="address" cssClass="form-control" id="address" />
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label for="userFile" class="form-label fw-semibold">Avatar</label>
+                                            <input type="file" id="userFile" name="userFile" class="form-control"
+                                                accept="image/*" onchange="previewImage(this);">
+                                            <div class="mt-3 text-center">
+                                                <img src="https://ui-avatars.com/api/?name=New+User&background=random"
+                                                    id="avatarPreview" class="img-fluid rounded-circle shadow-sm"
+                                                    style="width: 100px; height: 100px; object-fit: cover; display: none;">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </main>
-                        <jsp:include page="../layout/footer.jsp" />
+
+                                <hr class="my-4">
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary px-5"><i
+                                            class="fa-solid fa-floppy-disk me-2"></i>Lưu Người Dùng</button>
+                                </div>
+
+                            </form:form>
+                        </div>
                     </div>
                 </div>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="/js/scripts.js"></script>
+            </div>
 
-            </body>
+            <script>
+                function previewImage(input) {
+                    if (input.files && input.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            const preview = document.getElementById('avatarPreview');
+                            preview.src = e.target.result;
+                            preview.style.display = 'inline-block';
+                        }
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                }
+            </script>
 
-            </html> 
-
+            <jsp:include page="/WEB-INF/view/layout/footer.jsp" />

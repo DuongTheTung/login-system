@@ -1,128 +1,60 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-        <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-            <!DOCTYPE html>
-            <html lang="en">
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-            <head>
-                <meta charset="utf-8" />
-                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-                <meta name="description" content="" />
-                <meta name="author" content="" />
-                <title>Register - SB Admin</title>
-                <link href="css/styles.css" rel="stylesheet" />
-                <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-            </head>
+<jsp:include page="/WEB-INF/view/layout/header.jsp" />
 
-            <body class="bg-primary">
-                <div id="layoutAuthentication">
-                    <div id="layoutAuthentication_content">
-                        <main>
-                            <div class="container">
-                                <div class="row justify-content-center">
-                                    <div class="col-lg-7">
-                                        <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                            <div class="card-header">
-                                                <h3 class="text-center font-weight-light my-4">Create Account</h3>
-                                            </div>
-                                            <div class="card-body">
-                                                <form:form method="post" action="/register"
-                                                    modelAttribute="registerUser">
-                                                    <c:set var="errorPassword">
-                                                        <form:errors path="confirmPassword"
-                                                            cssClass="invalid-feedback" />
-                                                    </c:set>
-                                                    <c:set var="errorEmail">
-                                                        <form:errors path="email" cssClass="invalid-feedback" />
-                                                    </c:set>
-                                                    <c:set var="errorFirstName">
-                                                        <form:errors path="firstName" cssClass="invalid-feedback" />
-                                                    </c:set>
-                                                    <div class="row mb-3">
-                                                        <div class="col-md-6">
-                                                            <div class="form-floating mb-3 mb-md-0">
-                                                                <form:input
-                                                                    class="form-control ${not empty errorFirstName ? 'is-invalid' : ''}"
-                                                                    type="text" placeholder="Enter your first name"
-                                                                    path="firstName" />
-                                                                <label for="inputFirstName">First name</label>
-                                                                ${errorFirstName}
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-floating">
-                                                                <form:input class="form-control" type="text"
-                                                                    placeholder="Enter your last name"
-                                                                    path="lastName" />
-                                                                <label for="inputLastName">Last name</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-floating mb-3">
-                                                        <form:input
-                                                            class="form-control ${not empty errorEmail ? 'is-invalid' : ''}"
-                                                            type="email" placeholder="name@example.com" path="email" />
-                                                        <label for="inputEmail">Email address</label>
-                                                        ${errorEmail}
-                                                    </div>
-                                                    <div class="row mb-3">
-                                                        <div class="col-md-6">
-                                                            <div class="form-floating mb-3 mb-md-0">
-                                                                <form:input
-                                                                    class="form-control ${not empty errorPassword ? 'is-invalid' : ''}"
-                                                                    type="password" placeholder="Create a password"
-                                                                    path="password" />
-                                                                <label for="inputPassword">Password</label>
-                                                                ${errorPassword}
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-floating mb-3 mb-md-0">
-                                                                <form:input class="form-control" type="password"
-                                                                    placeholder="Confirm password"
-                                                                    path="confirmPassword" />
-                                                                <label
-                                                                    for="inputPasswordConfirm">ConfirmPassword</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mt-4 mb-0">
-                                                        <div class="d-grid">
-                                                            <button class="btn btn-primary btn-block">
-                                                                create account
-                                                            </button>
-                                                        </div>
-                                                </form:form>
-                                            </div>
-                                            <div class="card-footer text-center py-3">
-                                                <div class="small"><a href="login">Have an account? Go to login</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </main>
-                    </div>
-                    <div id="layoutAuthentication_footer">
-                        <footer class="py-4 bg-light mt-auto">
-                            <div class="container-fluid px-4">
-                                <div class="d-flex align-items-center justify-content-between small">
-                                    <div class="text-muted">Copyright &copy; Your Website 2023</div>
-                                    <div>
-                                        <a href="#">Privacy Policy</a>
-                                        &middot;
-                                        <a href="#">Terms &amp; Conditions</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </footer>
-                    </div>
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-success">Đăng Ký Tài Khoản</h2>
+                    <p class="text-muted">Nhập thông tin của bạn để tạo tài khoản mới</p>
                 </div>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="js/scripts.js"></script>
-            </body>
 
-            </html>
+                <form:form action="/register" method="post" modelAttribute="registerUser">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                    <div class="row mb-3">
+                        <div class="col-md-6 form-floating">
+                            <form:input path="firstName" cssClass="form-control" id="firstName" placeholder="First Name"/>
+                            <label for="firstName" class="ms-2">Họ</label>
+                            <form:errors path="firstName" cssClass="text-danger small mt-1 d-block" />
+                        </div>
+                        <div class="col-md-6 form-floating mt-3 mt-md-0">
+                            <form:input path="lastName" cssClass="form-control" id="lastName" placeholder="Last Name"/>
+                            <label for="lastName" class="ms-2">Tên</label>
+                            <form:errors path="lastName" cssClass="text-danger small mt-1 d-block" />
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <form:input path="email" type="email" cssClass="form-control" id="email" placeholder="Email"/>
+                        <label for="email">Địa chỉ Email</label>
+                        <form:errors path="email" cssClass="text-danger small mt-1 d-block" />
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <form:password path="password" cssClass="form-control" id="password" placeholder="Password"/>
+                        <label for="password">Mật khẩu</label>
+                        <form:errors path="password" cssClass="text-danger small mt-1 d-block" />
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <form:password path="confirmPassword" cssClass="form-control" id="confirmPassword" placeholder="Confirm Password"/>
+                        <label for="confirmPassword">Xác nhận mật khẩu</label>
+                        <form:errors path="confirmPassword" cssClass="text-danger small mt-1 d-block" />
+                    </div>
+
+                    <button class="btn btn-success w-100 py-2 mb-3" type="submit">Đăng Ký</button>
+                    
+                    <div class="text-center text-muted">
+                        Đã có tài khoản? <a href="/login" class="text-decoration-none fw-semibold">Đăng nhập ngay</a>
+                    </div>
+                </form:form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<jsp:include page="/WEB-INF/view/layout/footer.jsp" />

@@ -6,6 +6,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.example.login_system.domain.User;
 import com.example.login_system.domain.dto.RegisterDTO;
@@ -55,7 +57,7 @@ public class HomePageController {
         return "auth/login";
     }
 
-    @GetMapping("/access-deny")
+    @RequestMapping(value = "/access-deny", method = { RequestMethod.GET, RequestMethod.POST })
     public String getDenyPage(Model model) {
         model.addAttribute("registerUser", new RegisterDTO());
         return "auth/deny";

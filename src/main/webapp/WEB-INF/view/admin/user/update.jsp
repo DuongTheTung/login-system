@@ -1,70 +1,124 @@
-<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-            <!DOCTYPE html>
-            <html lang="en">
 
-            <head>
-                <meta charset="utf-8" />
-                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-                <meta name="description" content="" />
-                <meta name="author" content="" />
-                <title>Dashboard - SB Admin</title>
-                <link href="/css/styles.css" rel="stylesheet" />
-                <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-            </head>
+            <jsp:include page="/WEB-INF/view/layout/header.jsp" />
 
-            <body class="sb-nav-fixed">
-                <jsp:include page="../layout/header.jsp"></jsp:include>
-                <div id="layoutSidenav">
-                    <jsp:include page="../layout/sidebar.jsp"></jsp:include>
-                    <div id="layoutSidenav_content">
-                        <main>
-                            <div class="container mt-5">
+            <div class="row justify-content-center pt-4 mb-5">
+                <div class="col-md-10 col-lg-8">
+                    <div class="card shadow-sm border-0 bg-white">
+                        <div
+                            class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                            <h4 class="fw-bold text-success mb-0"><i class="fa-solid fa-user-pen me-2"></i>Sửa Thông Tin
+                                Người Dùng</h4>
+                            <a href="/admin/user" class="btn btn-sm btn-outline-secondary"><i
+                                    class="fa-solid fa-arrow-left me-1"></i>Trở lại danh sách</a>
+                        </div>
+                        <div class="card-body p-4">
+
+                            <form:form action="/admin/user/update" method="post" modelAttribute="newUser"
+                                enctype="multipart/form-data" class="needs-validation">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                <form:hidden path="id" />
+
                                 <div class="row">
-                                    <div class="col-md-6 col-12 mx-auto">
-                                        <h3>Cập nhật người dùng</h3>
-                                        <hr />
-                                        <form:form method="post" action="/admin/user/update" modelAttribute="newUser">
-                                            <div class="mb-3" style="display: none">
-                                                <label class="form-label">id:</label>
-                                                <form:input type="text" class="form-control" path="id" />
-                                            </div>
+                                    <!-- Cột Trái -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label fw-semibold">Email <span
+                                                    class="text-muted fw-normal">(Không thể sửa)</span></label>
+                                            <form:input path="email" type="email" cssClass="form-control bg-light"
+                                                id="email" readonly="true" />
+                                        </div>
 
-                                            <div class="mb-3">
-                                                <label class="form-label">Email:</label>
-                                                <form:input type="email" class="form-control" path="email"
-                                                    disabled="true" />
-                                            </div>
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label fw-semibold">Mật khẩu mới <span
+                                                    class="text-muted fw-normal">(Để trống nếu không đổi)</span></label>
+                                            <form:password path="password" cssClass="form-control" id="password"
+                                                value="" />
+                                            <form:errors path="password" cssClass="text-danger small mt-1 d-block" />
+                                        </div>
 
-                                            <div class="mb-3">
-                                                <label class="form-label">Số điện thoại:</label>
-                                                <form:input type="text" class="form-control" path="phone" />
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Tên đầy đủ:</label>
-                                                <form:input type="text" class="form-control" path="fullName" />
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Địa chỉ:</label>
-                                                <form:input type="text" class="form-control" path="Address" />
-                                            </div>
+                                        <div class="mb-3">
+                                            <label for="fullName" class="form-label fw-semibold">Họ và Tên <span
+                                                    class="text-danger">*</span></label>
+                                            <form:input path="fullName" cssClass="form-control" id="fullName"
+                                                required="true" />
+                                            <form:errors path="fullName" cssClass="text-danger small mt-1 d-block" />
+                                        </div>
 
-                                            <button type="submit" class="btn btn-primary">Cập nhật</button>
-                                        </form:form>
+                                        <div class="mb-3">
+                                            <label for="roleName" class="form-label fw-semibold">Vai trò <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="role.name" class="form-select" id="roleName" required>
+                                                <option value="USER" ${newUser.role.name=='USER' ? 'selected' : '' }>
+                                                    USER</option>
+                                                <option value="ADMIN" ${newUser.role.name=='ADMIN' ? 'selected' : '' }>
+                                                    ADMIN</option>
+                                            </select>
+                                        </div>
                                     </div>
 
+                                    <!-- Cột Phải -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="phone" class="form-label fw-semibold">Số điện thoại</label>
+                                            <form:input path="phone" cssClass="form-control" id="phone" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="address" class="form-label fw-semibold">Địa chỉ</label>
+                                            <form:input path="address" cssClass="form-control" id="address" />
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label for="userFile" class="form-label fw-semibold">Avatar <span
+                                                    class="text-muted fw-normal">(Chọn để cập nhật)</span></label>
+                                            <input type="file" id="userFile" name="userFile" class="form-control"
+                                                accept="image/*" onchange="previewImage(this);">
+                                            <div class="mt-3 text-center">
+                                                <c:choose>
+                                                    <c:when test="${not empty newUser.avatar}">
+                                                        <img src="/images/avatar/${newUser.avatar}" id="avatarPreview"
+                                                            class="img-fluid rounded-circle shadow-sm"
+                                                            style="width: 100px; height: 100px; object-fit: cover;">
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <img src="https://ui-avatars.com/api/?name=${newUser.fullName}&background=random"
+                                                            id="avatarPreview"
+                                                            class="img-fluid rounded-circle shadow-sm"
+                                                            style="width: 100px; height: 100px; object-fit: cover;">
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                            </div>
-                        </main>
-                        <jsp:include page="../layout/footer.jsp"></jsp:include>
+                                <hr class="my-4">
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-success px-5"><i
+                                            class="fa-solid fa-floppy-disk me-2"></i>Lưu Thay Đổi</button>
+                                </div>
+
+                            </form:form>
+                        </div>
                     </div>
                 </div>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="/js/scripts.js"></script>
-            </body>
+            </div>
 
-            </html>
+            <script>
+                function previewImage(input) {
+                    if (input.files && input.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            const preview = document.getElementById('avatarPreview');
+                            preview.src = e.target.result;
+                        }
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                }
+            </script>
+
+            <jsp:include page="/WEB-INF/view/layout/footer.jsp" />

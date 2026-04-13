@@ -1,82 +1,61 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-            <!DOCTYPE html>
-            <html lang="en">
 
-            <head>
-                <meta charset="utf-8" />
-                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-                <meta name="description" content="" />
-                <meta name="author" content="" />
-                <title>Login </title>
-                <link href="/css/styles.css" rel="stylesheet" />
-                <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-            </head>
+            <jsp:include page="/WEB-INF/view/layout/header.jsp" />
 
-            <body class="bg-primary">
-                <div id="layoutAuthentication">
-                    <div id="layoutAuthentication_content">
-                        <main>
-                            <div class="container">
-                                <div class="row justify-content-center">
-                                    <div class="col-lg-5">
-                                        <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                            <div class="card-header">
-                                                <h3 class="text-center font-weight-light my-4">Đăng nhập</h3>
-                                            </div>
-                                            <div class="card-body">
-                                                <form method="post" action="/login">
-                                                    <c:if test="${param.error != null}">
-                                                        <div class="my-2" style="color: red;">Invalid email or password.
-                                                        </div>
-                                                    </c:if>
+            <div class="row justify-content-center mt-5 mb-5">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow border-0 rounded-4">
+                        <div class="card-body p-5">
+                            <div class="text-center mb-4">
+                                <h2 class="fw-bold text-primary">Đăng Nhập</h2>
+                                <p class="text-muted">Nhập email và mật khẩu của bạn</p>
+                            </div>
 
-                                                    <c:if test="${param.logout != null}">
-                                                        <div class="my-2" style="color: green;">đăng xuất thành công.
-                                                        </div>
-                                                    </c:if>
+                            <c:if test="${param.error != null}">
+                                <div class="alert alert-danger" role="alert">
+                                    Sai tài khoản hoặc mật khẩu!
+                                </div>
+                            </c:if>
+                            <c:if test="${param.logout != null}">
+                                <div class="alert alert-success" role="alert">
+                                    Đăng xuất thành công!
+                                </div>
+                            </c:if>
 
-                                                    <div class="form-floating mb-3">
-                                                        <input class="form-control" type="email"
-                                                            placeholder="name@example.com" name="username" />
-                                                        <label>Địa chỉ email</label>
-                                                    </div>
-                                                    <div class="form-floating mb-3">
-                                                        <input class="form-control" type="password"
-                                                            placeholder="Password" name="password" />
-                                                        <label>Mật khẩu</label>
-                                                    </div>
-                                                    <div>
-                                                        <input type="hidden" name="${_csrf.parameterName}"
-                                                            value="${_csrf.token}" />
-                                                    </div>
-
-                                                    <div class="mt-4 mb-0">
-                                                        <div class="d-grid">
-                                                            <button class="btn btn-primary btn-block">
-                                                                Đăng nhập
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                            <div class="card-footer text-center py-3">
-                                                <div class="small"><a href="/register">Cần một tài khoản? Đăng ký!</a>
-                                                </div>
-                                            </div>
-                                        </div>
+                            <form action="/login" method="post" class="needs-validation" novalidate>
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="username" name="username"
+                                        placeholder="Email" required autofocus>
+                                    <label for="username">Email</label>
+                                    <div class="invalid-feedback">
+                                        Vui lòng nhập Email.
                                     </div>
                                 </div>
-                            </div>
-                        </main>
+
+                                <div class="form-floating mb-4">
+                                    <input type="password" class="form-control" id="password" name="password"
+                                        placeholder="Password" required>
+                                    <label for="password">Mật khẩu</label>
+                                    <div class="invalid-feedback">
+                                        Vui lòng nhập Mật khẩu.
+                                    </div>
+                                </div>
+
+
+
+                                <button class="btn btn-primary w-100 py-2 mb-3" type="submit">Đăng nhập</button>
+
+                                <div class="text-center text-muted mt-3">
+                                    Chưa có tài khoản? <a href="/register" class="text-decoration-none fw-semibold">Đăng
+                                        ký ngay</a>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-
                 </div>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="/js/scripts.js"></script>
-            </body>
+            </div>
 
-            </html>
+            <jsp:include page="/WEB-INF/view/layout/footer.jsp" />
