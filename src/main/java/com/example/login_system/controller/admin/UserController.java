@@ -44,14 +44,6 @@ public class UserController {
         this.uploadService = uploadService;
     }
 
-    // @GetMapping("/")
-    // public String getHomePage(Model model, @PathVariable long id) {
-    // User user = this.userService.getUserById(id);
-    // model.addAttribute("user", user);
-    // model.addAttribute("id", id);
-    // return "client/homepage/dashboard/show";
-    // }
-
     @GetMapping("/")
     public String getHomePage(Model model, Principal principal) {
         if (principal != null) {
@@ -85,19 +77,11 @@ public class UserController {
         return "admin/user/create";
     }
 
-    // @PostMapping("/admin/user/create")
-    // public String createUserPage(Model model, @ModelAttribute("newUser") User
-    // hoidanit) {
-    // // this.userService.handleSaveUser(hoidanit);
-    // return "redirect:/admin/user";
-
-    // }
-
     @PostMapping(value = "/admin/user/create")
     public String createUserPage(Model model,
-            @ModelAttribute("newUser") @Valid User hoidanit,
+            @ModelAttribute("newUser") @Valid User user,
             BindingResult newUserBindingResult,
-            @RequestParam("hoidanitFile") MultipartFile file) {
+            @RequestParam("userFile") MultipartFile file) {
         List<FieldError> errors = newUserBindingResult.getFieldErrors();
         for (FieldError error : errors) {
             System.out.println(error.getField() + " - " + error.getDefaultMessage());
@@ -108,11 +92,11 @@ public class UserController {
         }
 
         String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
-        String hashPassword = this.PasswordEncoder.encode(hoidanit.getPassword());
-        hoidanit.setAvatar(avatar);
-        hoidanit.setPassword(hashPassword);
-        hoidanit.setRole(this.userService.getRoleByName(hoidanit.getRole().getName()));
-        this.userService.handleSaveUser(hoidanit);
+        String hashPassword = this.PasswordEncoder.encode(user.getPassword());
+        user.setAvatar(avatar);
+        user.setPassword(hashPassword);
+        user.setRole(this.userService.getRoleByName(user.getRole().getName()));
+        this.userService.handleSaveUser(user);
         return "redirect:/admin/user";
     }
 
@@ -125,16 +109,52 @@ public class UserController {
     }
 
     @PostMapping("/admin/user/update")
-    public String postUpdateUser(Model model, @ModelAttribute("newUser") User user) {
+    public String postUpdateUser(
+            Model model,
+            @ModelAttribute("newUser") User user,
+            BindingResult newUserBindingResult,
+            @RequestParam("userFile") MultipartFile file) {
+
+        // 1. Lấy thông tin User hiện tại từ Database
         User currentUser = this.userService.getUserById(user.getId());
+
         if (currentUser != null) {
+            // 2. Xử lý Password (Logic quan trọng nhất)
+            String newPassword = user.getPassword();
+
+            // Chỉ xử lý nếu Admin có nhập gì đó vào ô mật khẩu
+            if (newPassword != null && !newPassword.trim().isEmpty()) {
+                // Kiểm tra độ dài nếu có nhập (tránh lỗi ConstraintViolationException)
+                if (newPassword.length() < 2) {
+                    newUserBindingResult.rejectValue("password", "error.user", "Mật khẩu mới phải có ít nhất 2 ký tự");
+                    return "admin/user/update"; // Trả về trang sửa và hiện lỗi
+                }
+                // Nếu hợp lệ (> 2 ký tự) thì mới mã hóa và thay thế
+                String hashPassword = this.PasswordEncoder.encode(newPassword);
+                currentUser.setPassword(hashPassword);
+            }
+            // NẾU Ô PASSWORD TRỐNG: currentUser vẫn giữ password cũ (dạng hash) từ DB
+            // nên khi save sẽ không bao giờ bị lỗi thiếu ký tự.
+
+            // 3. Xử lý Avatar (Chỉ thay đổi nếu có chọn file mới)
+            if (file != null && !file.isEmpty()) {
+                String img = this.uploadService.handleSaveUploadFile(file, "avatar");
+                currentUser.setAvatar(img);
+            }
+
+            // 4. Cập nhật các thông tin cơ bản khác từ form vào currentUser
             currentUser.setAddress(user.getAddress());
             currentUser.setFullName(user.getFullName());
             currentUser.setPhone(user.getPhone());
+
+            // Cập nhật Role (Lấy object Role thật từ DB dựa trên name gửi về)
+            currentUser.setRole(this.userService.getRoleByName(user.getRole().getName()));
+
+            // 5. Lưu đối tượng currentUser (đối tượng này luôn đầy đủ Email, ID, Password)
             this.userService.handleSaveUser(currentUser);
         }
-        return "redirect:/admin/user";
 
+        return "redirect:/admin/user";
     }
 
     @GetMapping("/admin/user/delete/{id}")
@@ -189,27 +209,6 @@ public class UserController {
         return "client/homepage/user/change-password";
     }
 
-    // @GetMapping("/update/{id}")
-    // public String getUpdate(Model model, @PathVariable long id) {
-    // User currentUser = this.userService.getUserById(id);
-    // model.addAttribute("newUser", currentUser);
-    // return "client/homepage/user/update";
-
-    // }
-
-    // @PostMapping("/update")
-    // public String postUpdate(Model model, @ModelAttribute("newUser") User user) {
-    // User currentUser = this.userService.getUserById(user.getId());
-    // if (currentUser != null) {
-    // currentUser.setAddress(user.getAddress());
-    // currentUser.setFullName(user.getFullName());
-    // currentUser.setPhone(user.getPhone());
-    // this.userService.handleSaveUser(currentUser);
-    // }
-    // return "redirect:/";
-
-    // }
-
     @GetMapping("/update/{id}")
     public String getUpdate(Model model, @PathVariable long id, Principal principal) {
         // 1. Lấy thông tin user đang đăng nhập qua session (Email)
@@ -227,7 +226,11 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public String postUpdate(Model model, @ModelAttribute("newUser") User user, Principal principal) {
+    public String postUpdate(
+            Model model,
+            @ModelAttribute("newUser") User user,
+            @RequestParam(value = "userFile", required = false) MultipartFile file,
+            Principal principal) {
         // 1. Lấy user thực sự đang đăng nhập
         String email = principal.getName();
         User loginUser = this.userService.getUserByEmail(email);
@@ -236,6 +239,12 @@ public class UserController {
         if (loginUser != null && loginUser.getId() == user.getId()) {
             User currentUser = this.userService.getUserById(user.getId());
             if (currentUser != null) {
+                // Xử lý Avatar (Chỉ thay đổi nếu có chọn file mới)
+                if (file != null && !file.isEmpty()) {
+                    String img = this.uploadService.handleSaveUploadFile(file, "avatar");
+                    currentUser.setAvatar(img);
+                }
+
                 currentUser.setAddress(user.getAddress());
                 currentUser.setFullName(user.getFullName());
                 currentUser.setPhone(user.getPhone());

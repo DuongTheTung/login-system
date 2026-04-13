@@ -1,89 +1,60 @@
-<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-            <!DOCTYPE html>
-            <html lang="en">
+            <jsp:include page="/WEB-INF/view/layout/header.jsp" />
 
-            <head>
-                <meta charset="utf-8" />
-                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-                <title>Đổi mật khẩu</title>
+            <div class="row justify-content-center pt-4 mb-5">
+                <div class="col-md-6 col-lg-5">
+                    <div class="card shadow-sm border-0 bg-white">
+                        <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                            <h4 class="fw-bold text-warning mb-0"><i class="fa-solid fa-key me-2"></i>Đổi Mật Khẩu</h4>
+                        </div>
+                        <div class="card-body p-4">
 
-                <link href="/css/styles.css" rel="stylesheet" />
-                <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
-            </head>
+                            <c:if test="${not empty error}">
+                                <div class="alert alert-danger" role="alert">
+                                    <i class="fa-solid fa-circle-exclamation me-1"></i> ${error}
+                                </div>
+                            </c:if>
 
-            <body class="sb-nav-fixed">
+                            <c:if test="${not empty success}">
+                                <div class="alert alert-success" role="alert">
+                                    <i class="fa-solid fa-circle-check me-1"></i> ${success}
+                                </div>
+                            </c:if>
 
-                <!-- Header -->
-                <jsp:include page="../layout/header.jsp"></jsp:include>
-
-                <div id="layoutSidenav">
-
-
-
-                    <div id="layoutSidenav_content">
-                        <main>
-
-                            <div class="container-fluid px-4">
-                                <h1 class="mt-4">Đổi mật khẩu</h1>
-                                <hr />
-
-                                <div class="row">
-                                    <div class="col-md-6 mx-auto">
-
-                                        <!-- Thông báo -->
-                                        <c:if test="${error != null}">
-                                            <div class="alert alert-danger">${error}</div>
-                                        </c:if>
-
-                                        <c:if test="${success != null}">
-                                            <div class="alert alert-success">${success}</div>
-                                        </c:if>
-
-                                        <!-- Form -->
-                                        <form action="/change-password" method="post">
-
-                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Mật khẩu hiện tại</label>
-                                                <input type="password" name="oldPassword" class="form-control"
-                                                    required />
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Mật khẩu mới</label>
-                                                <input type="password" name="newPassword" class="form-control"
-                                                    required />
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Xác nhận mật khẩu</label>
-                                                <input type="password" name="confirmPassword" class="form-control"
-                                                    required />
-                                            </div>
-
-                                            <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
-
-                                            <a href="/" class="btn btn-secondary">Về trang chủ</a>
-                                        </form>
-
-                                    </div>
+                            <form action="/change-password" method="post" class="needs-validation">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                <div class="mb-3">
+                                    <label for="oldPassword" class="form-label fw-semibold">Mật khẩu hiện tại</label>
+                                    <input type="password" class="form-control" id="oldPassword" name="oldPassword"
+                                        required>
                                 </div>
 
-                            </div>
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label fw-semibold">Mật khẩu mới</label>
+                                    <input type="password" class="form-control" id="newPassword" name="newPassword"
+                                        required minlength="2">
+                                    <div class="form-text">Mật khẩu phải có ít nhất 2 ký tự.</div>
+                                </div>
 
-                        </main>
+                                <div class="mb-4">
+                                    <label for="confirmPassword" class="form-label fw-semibold">Xác nhận mật khẩu
+                                        mới</label>
+                                    <input type="password" class="form-control" id="confirmPassword"
+                                        name="confirmPassword" required minlength="2">
+                                </div>
 
-
+                                <div class="d-flex gap-2">
+                                    <a href="/" class="btn btn-secondary px-4">Hủy</a>
+                                    <button type="submit" class="btn btn-warning px-4 text-dark fw-medium">Lưu Thay
+                                        Đổi</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-            </body>
+            </div>
 
-            </html>
+            <jsp:include page="/WEB-INF/view/layout/footer.jsp" />
