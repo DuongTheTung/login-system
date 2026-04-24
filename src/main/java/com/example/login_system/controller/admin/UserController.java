@@ -20,6 +20,9 @@ import com.example.login_system.service.UploadService;
 
 import jakarta.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,11 +58,44 @@ public class UserController {
     }
 
     @GetMapping("/admin/user")
-    public String getUserPage(Model model) {
-        List<User> users = this.userService.getAllUsers();
-        model.addAttribute("users1", users);
+    public String getUserPage(Model model,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String keyword) {
+        int pageSize = 5;
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Page<User> userPage;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            userPage = this.userService.getUsersWithSearch(keyword.trim(), pageable);
+        } else {
+            userPage = this.userService.getAllUsers(pageable);
+        }
+
+        model.addAttribute("userPage", userPage);
+        model.addAttribute("users1", userPage.getContent());
+        model.addAttribute("keyword", keyword);
         return "admin/user/show";
 
+    }
+
+    @GetMapping("/admin/user/lock/{id}")
+    public String lockUser(@PathVariable long id) {
+        User user = this.userService.getUserById(id);
+        if (user != null) {
+            user.setEnabled(false);
+            this.userService.handleSaveUser(user);
+        }
+        return "redirect:/admin/user";
+    }
+
+    @GetMapping("/admin/user/unlock/{id}")
+    public String unlockUser(@PathVariable long id) {
+        User user = this.userService.getUserById(id);
+        if (user != null) {
+            user.setEnabled(true);
+            this.userService.handleSaveUser(user);
+        }
+        return "redirect:/admin/user";
     }
 
     @GetMapping("/admin/user/{id}")
@@ -85,6 +121,10 @@ public class UserController {
         List<FieldError> errors = newUserBindingResult.getFieldErrors();
         for (FieldError error : errors) {
             System.out.println(error.getField() + " - " + error.getDefaultMessage());
+        }
+
+        if (user.getPassword() == null || !user.getPassword().matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*()]).{8,}$")) {
+            newUserBindingResult.rejectValue("password", "error.user", "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#$%^&+=!*())");
         }
 
         if (newUserBindingResult.hasErrors()) {
@@ -124,9 +164,9 @@ public class UserController {
 
             // Chỉ xử lý nếu Admin có nhập gì đó vào ô mật khẩu
             if (newPassword != null && !newPassword.trim().isEmpty()) {
-                // Kiểm tra độ dài nếu có nhập (tránh lỗi ConstraintViolationException)
-                if (newPassword.length() < 2) {
-                    newUserBindingResult.rejectValue("password", "error.user", "Mật khẩu mới phải có ít nhất 2 ký tự");
+                // Kiểm tra mật khẩu mạnh (tránh lỗi ConstraintViolationException)
+                if (!newPassword.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*()]).{8,}$")) {
+                    newUserBindingResult.rejectValue("password", "error.user", "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#$%^&+=!*())");
                     return "admin/user/update"; // Trả về trang sửa và hiện lỗi
                 }
                 // Nếu hợp lệ (> 2 ký tự) thì mới mã hóa và thay thế
@@ -146,6 +186,7 @@ public class UserController {
             currentUser.setAddress(user.getAddress());
             currentUser.setFullName(user.getFullName());
             currentUser.setPhone(user.getPhone());
+            currentUser.setBirthday(user.getBirthday());
 
             // Cập nhật Role (Lấy object Role thật từ DB dựa trên name gửi về)
             currentUser.setRole(this.userService.getRoleByName(user.getRole().getName()));
@@ -192,6 +233,12 @@ public class UserController {
         // check mật khẩu cũ
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             model.addAttribute("error", "Mật khẩu cũ không đúng");
+            return "client/homepage/user/change-password";
+        }
+
+        // check password mạnh
+        if (!newPassword.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*()]).{8,}$")) {
+            model.addAttribute("error", "Mật khẩu mới phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#$%^&+=!*())");
             return "client/homepage/user/change-password";
         }
 
@@ -248,6 +295,7 @@ public class UserController {
                 currentUser.setAddress(user.getAddress());
                 currentUser.setFullName(user.getFullName());
                 currentUser.setPhone(user.getPhone());
+                currentUser.setBirthday(user.getBirthday());
                 this.userService.handleSaveUser(currentUser);
             }
         } else {

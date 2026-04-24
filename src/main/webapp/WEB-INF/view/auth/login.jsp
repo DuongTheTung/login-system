@@ -15,7 +15,15 @@
 
                             <c:if test="${param.error != null}">
                                 <div class="alert alert-danger" role="alert">
-                                    Sai tài khoản hoặc mật khẩu!
+                                    <c:set var="exception" value="${sessionScope['SPRING_SECURITY_LAST_EXCEPTION']}"/>
+                                    <c:choose>
+                                        <c:when test="${not empty exception}">
+                                            ${exception.message}
+                                        </c:when>
+                                        <c:otherwise>
+                                            Sai tài khoản hoặc mật khẩu!
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </c:if>
                             <c:if test="${param.logout != null}">

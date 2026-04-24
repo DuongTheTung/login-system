@@ -57,6 +57,11 @@
                                 </div>
 
                                 <div class="mb-3">
+                                    <label for="birthday" class="form-label fw-semibold">Ngày sinh</label>
+                                    <form:input path="birthday" type="date" cssClass="form-control" id="birthday" />
+                                </div>
+
+                                <div class="mb-3">
                                     <label for="phone" class="form-label fw-semibold">Số điện thoại</label>
                                     <form:input path="phone" cssClass="form-control" id="phone" />
                                 </div>

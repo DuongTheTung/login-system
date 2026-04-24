@@ -36,6 +36,7 @@
                                                     class="text-danger">*</span></label>
                                             <form:password path="password" cssClass="form-control" id="password"
                                                 required="true" />
+                                            <div class="form-text text-muted small mt-1">Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#$%^&+=!*()).</div>
                                             <form:errors path="password" cssClass="text-danger small mt-1 d-block" />
                                         </div>
 
@@ -59,6 +60,11 @@
 
                                     <!-- Cột Phải -->
                                     <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="birthday" class="form-label fw-semibold">Ngày sinh</label>
+                                            <form:input path="birthday" type="date" cssClass="form-control" id="birthday" />
+                                        </div>
+
                                         <div class="mb-3">
                                             <label for="phone" class="form-label fw-semibold">Số điện thoại</label>
                                             <form:input path="phone" cssClass="form-control" id="phone" />

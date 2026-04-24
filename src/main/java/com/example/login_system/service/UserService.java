@@ -10,6 +10,9 @@ import com.example.login_system.domain.dto.RegisterDTO;
 import com.example.login_system.repository.RoleRepository;
 import com.example.login_system.repository.UserRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Service
 public class UserService {
 
@@ -78,11 +81,19 @@ public class UserService {
         return this.userRepository.count();
     }
 
-    // public long countProducts(){
-    // return this.productRepository.count();
-    // }
+    public long countByRoleName(String roleName) {
+        return this.userRepository.countByRoleName(roleName);
+    }
 
-    // public long countOrders(){
-    // return this.orderRepository.count();
-    // }
+    public long countByEnabled(boolean enabled) {
+        return this.userRepository.countByEnabled(enabled);
+    }
+
+    public Page<User> getAllUsers(Pageable pageable) {
+        return this.userRepository.findAll(pageable);
+    }
+
+    public Page<User> getUsersWithSearch(String keyword, Pageable pageable) {
+        return this.userRepository.findByEmailContainingIgnoreCaseOrFullNameContainingIgnoreCase(keyword, keyword, pageable);
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.login_system.domain.dto;
 
 import com.example.login_system.service.validator.RegisterChecked;
+import com.example.login_system.service.validator.StrongPassword;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -14,6 +15,7 @@ public class RegisterDTO {
     @Email(message = "Email ko hop le", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
 
+    @StrongPassword(message = "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt")
     private String password;
 
     @Size(min = 3, message = "confirmpassword phải có tối iểu 3 ký tự")

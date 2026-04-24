@@ -35,8 +35,8 @@
                                 <div class="mb-3">
                                     <label for="newPassword" class="form-label fw-semibold">Mật khẩu mới</label>
                                     <input type="password" class="form-control" id="newPassword" name="newPassword"
-                                        required minlength="2">
-                                    <div class="form-text">Mật khẩu phải có ít nhất 2 ký tự.</div>
+                                        required minlength="8">
+                                    <div class="form-text">Mật khẩu phải có ít nhất 8 ký tự, chữ hoa, thường, số và ký tự đặc biệt.</div>
                                 </div>
 
                                 <div class="mb-4">

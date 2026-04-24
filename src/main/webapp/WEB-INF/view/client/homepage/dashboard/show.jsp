@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+        <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
             <jsp:include page="/WEB-INF/view/layout/header.jsp" />
 
             <div class="row pt-4 mb-5">
@@ -44,6 +45,15 @@
                         <div class="card-body p-4">
                             <div class="row mb-3">
                                 <div class="col-sm-3">
+                                    <h6 class="mb-0 text-muted">ID người dùng</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary fw-semibold">
+                                    #<fmt:formatNumber pattern="000000000000" value="${user.id}"/>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
                                     <h6 class="mb-0 text-muted">Họ và Tên</h6>
                                 </div>
                                 <div class="col-sm-9 text-dark fw-medium">
@@ -53,7 +63,16 @@
                             <hr>
                             <div class="row mb-3">
                                 <div class="col-sm-3">
-                                    <h6 class="mb-0 text-muted">Email</h6>
+                                    <h6 class="mb-0 text-muted">Ngày sinh</h6>
+                                </div>
+                                <div class="col-sm-9 text-dark fw-medium">
+                                    ${not empty user.birthday ? user.birthday : '<em>Chưa cập nhật</em>'}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0 text-muted">Email / Username</h6>
                                 </div>
                                 <div class="col-sm-9 text-dark fw-medium">
                                     ${user.email}
@@ -75,6 +94,15 @@
                                 </div>
                                 <div class="col-sm-9 text-dark fw-medium">
                                     ${not empty user.address ? user.address : '<em>Chưa cập nhật</em>'}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0 text-muted">Vai trò</h6>
+                                </div>
+                                <div class="col-sm-9 text-dark fw-medium">
+                                    <span class="badge bg-${user.role.name == 'ADMIN' ? 'danger' : 'success'}">${user.role.name}</span>
                                 </div>
                             </div>
                         </div>

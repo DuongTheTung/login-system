@@ -14,6 +14,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "users")
@@ -39,11 +41,16 @@ public class User {
 
     private String avatar;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthday;
+
     // roleId
     // User many -> to one -> role
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    private boolean enabled = true;
 
     @Override
     public String toString() {
@@ -107,6 +114,14 @@ public class User {
         this.avatar = avatar;
     }
 
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
+    }
+
     public Role getRole() {
         return role;
     }
@@ -114,5 +129,14 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
 
 }

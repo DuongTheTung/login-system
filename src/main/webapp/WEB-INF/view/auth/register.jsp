@@ -37,7 +37,8 @@
                     <div class="form-floating mb-3">
                         <form:password path="password" cssClass="form-control" id="password" placeholder="Password"/>
                         <label for="password">Mật khẩu</label>
-                        <form:errors path="password" cssClass="text-danger small mt-1 d-block" />
+                        <div class="form-text text-muted small mt-1 px-2">Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#$%^&+=!*()).</div>
+                        <form:errors path="password" cssClass="text-danger small mt-1 d-block px-2" />
                     </div>
 
                     <div class="form-floating mb-4">
