@@ -33,10 +33,12 @@
 
                                         <div class="mb-3">
                                             <label for="password" class="form-label fw-semibold">Mật khẩu mới <span
-                                                    class="text-muted fw-normal">(Để trống nếu không đổi)</span></label>
+                                                    class="text-muted fw-normal">(Giữ nguyên nếu không
+                                                    đổi)</span></label>
                                             <form:password path="password" cssClass="form-control" id="password"
                                                 value="" />
-                                            <div class="form-text text-muted small mt-1">Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#$%^&+=!*()).</div>
+                                            <div class="form-text text-muted small mt-1">Mật khẩu phải có ít nhất 8 ký
+                                                tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#$%^&+=!*()).</div>
                                             <form:errors path="password" cssClass="text-danger small mt-1 d-block" />
                                         </div>
 
@@ -64,7 +66,8 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="birthday" class="form-label fw-semibold">Ngày sinh</label>
-                                            <form:input path="birthday" type="date" cssClass="form-control" id="birthday" />
+                                            <form:input path="birthday" type="date" cssClass="form-control"
+                                                id="birthday" />
                                         </div>
 
                                         <div class="mb-3">
