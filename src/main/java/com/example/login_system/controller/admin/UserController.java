@@ -123,8 +123,10 @@ public class UserController {
             System.out.println(error.getField() + " - " + error.getDefaultMessage());
         }
 
-        if (user.getPassword() == null || !user.getPassword().matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*()]).{8,}$")) {
-            newUserBindingResult.rejectValue("password", "error.user", "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#$%^&+=!*())");
+        if (user.getPassword() == null
+                || !user.getPassword().matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*()]).{8,}$")) {
+            newUserBindingResult.rejectValue("password", "error.user",
+                    "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#$%^&+=!*())");
         }
 
         if (newUserBindingResult.hasErrors()) {
@@ -166,8 +168,9 @@ public class UserController {
             if (newPassword != null && !newPassword.trim().isEmpty()) {
                 // Kiểm tra mật khẩu mạnh (tránh lỗi ConstraintViolationException)
                 if (!newPassword.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*()]).{8,}$")) {
-                    newUserBindingResult.rejectValue("password", "error.user", "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#$%^&+=!*())");
-                    return "admin/user/update"; // Trả về trang sửa và hiện lỗi
+                    newUserBindingResult.rejectValue("password", "error.user",
+                            "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#$%^&+=!*())");
+                    return "admin/user/update";
                 }
                 // Nếu hợp lệ (> 2 ký tự) thì mới mã hóa và thay thế
                 String hashPassword = this.PasswordEncoder.encode(newPassword);
@@ -227,7 +230,7 @@ public class UserController {
             Principal principal,
             Model model) {
 
-        String email = principal.getName(); // user đang login
+        String email = principal.getName();
         User user = userService.getUserByEmail(email);
 
         // check mật khẩu cũ
@@ -238,7 +241,8 @@ public class UserController {
 
         // check password mạnh
         if (!newPassword.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*()]).{8,}$")) {
-            model.addAttribute("error", "Mật khẩu mới phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#$%^&+=!*())");
+            model.addAttribute("error",
+                    "Mật khẩu mới phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#$%^&+=!*())");
             return "client/homepage/user/change-password";
         }
 
